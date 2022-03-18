@@ -1,57 +1,64 @@
-const { I } = inject();
+Feature('sendingMessage');
 
-module.exports = {
+var assert = require('assert');
 
-  // insert your locators and methods here
-  URL: 'https://bluescapeqainterview.wordpress.com/contact/',
-  fields : {
-    name: 'input[id="g7-name"]',
-    email: 'input[id="g7-email"]',
-    website: 'input[id="g7-website"]',
-    date: 'input[id="g7-date"]',
-    currentdate: '.ui-datepicker-today'
-  },
-  submit: 'button[type=submit]',
-  nextPage: 'contact-form-id=',
+Scenario('send successful message', ({ I, contactPage}) => {
+    contactPage.navigateToRequiredPage(contactPage.URL),
+    I.see(contactPage.contactText);
+    contactPage.fillName(contactPage.testName),
+    contactPage.fillEmail(contactPage.testEmail),
+    contactPage.fillWebsite(contactPage.testWebsite),
+    contactPage.chooseCurrentDate(),
+    contactPage.clickSubmit(),
+    I.seeInCurrentUrl(contactPage.nextPage),
+    contactPage.validateCreatedAccountDetails(
+        contactPage.testName, 
+        contactPage.testEmail, 
+        contactPage.testWebsite
+        )
+});
 
-  //text
-  contactText: 'Contact',
-  errorMessage: 'Name is required',
+Scenario('Verify that the field Name is required.', ({ I, contactPage}) => {
+    contactPage.navigateToRequiredPage(contactPage.URL),
+    I.see(contactPage.contactText);
+    contactPage.fillName(" "),
+    contactPage.fillEmail(contactPage.testEmail),
+    contactPage.fillWebsite(contactPage.testWebsite),
+    contactPage.chooseCurrentDate(),
+    contactPage.clickSubmit(),
+    I.dontSeeInCurrentUrl(contactPage.nextPage),
+    I.see('Error!'),
+    I.see(contactPage.errorMessage)
+});
 
-  //test data
-  testEmail: 'test@example.com',
-  testWebsite: 'https://bluescapeqainterview.wordpress.com',
-  testName: 'test',
+Scenario('Verify that the field Email is required.', async({ I, contactPage}) => {
+    contactPage.navigateToRequiredPage(contactPage.URL),
+    I.see(contactPage.contactText);
+    contactPage.fillName(contactPage.testName),
+    contactPage.fillEmail(" "),
+    contactPage.fillWebsite(contactPage.testWebsite),
+    contactPage.chooseCurrentDate(),
+    contactPage.clickSubmit();
+    I.dontSeeInCurrentUrl(contactPage.nextPage),
 
-  // introducing methods
-  navigateToRequiredPage(URLData) {
-    I.amOnPage(URLData);
-  },
+    await I.grabAttributeFrom(contactPage.fields.email, 'aria-required').then(function(val) { 
+        I.say(val); 
+        assert.equal(val, 'true');
+    })
+});
 
-  fillName(name) {
-    I.fillField(this.fields.name, name);
-  },
+Scenario('Verify that the field website is required to be a URL.', async({ I, contactPage}) => {
+    contactPage.navigateToRequiredPage(contactPage.URL),
+    I.see(contactPage.contactText);
+    contactPage.fillName(contactPage.testName),
+    contactPage.fillEmail(contactPage.testEmail),
+    contactPage.fillWebsite(contactPage.testName),
+    contactPage.chooseCurrentDate(),
+    contactPage.clickSubmit()
+    I.dontSeeInCurrentUrl(contactPage.nextPage)
 
-  fillEmail(emailData) {
-    I.fillField(this.fields.email, emailData);
-  },
-
-  fillWebsite(websiteData) {
-    I.fillField(this.fields.website, websiteData);
-  },
-
-  chooseCurrentDate() {
-    I.click(this.fields.date);
-    I.click(this.fields.currentdate);
-  },
-
-  clickSubmit() {
-    I.forceClick(this.submit);
-  },
-
-  validateCreatedAccountDetails(name, email, website) {
-    I.see('Name: ' + name),
-    I.see('Email: ' + email),
-    I.see('Website: ' + website)
-  }
-}
+    await I.grabAttributeFrom(contactPage.fields.website, 'type').then(function(val) { 
+        I.say(val); 
+        assert.equal(val, 'url');
+    })
+});
