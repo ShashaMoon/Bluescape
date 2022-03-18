@@ -12,10 +12,16 @@ module.exports = {
     currentdate: '.ui-datepicker-today'
   },
   submit: 'button[type=submit]',
+  nextPage = 'contact-form-id=',
+
+  //text
+  contactText = 'Contact',
+  errorMessage = 'Name is required',
 
   //test data
   testEmail: 'test@example.com',
   testWebsite: 'https://bluescapeqainterview.wordpress.com',
+  testName = 'test',
 
   // introducing methods
   navigateToRequiredPage(URLData) {
