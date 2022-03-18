@@ -12,16 +12,16 @@ module.exports = {
     currentdate: '.ui-datepicker-today'
   },
   submit: 'button[type=submit]',
-  nextPage = 'contact-form-id=',
+  nextPage: 'contact-form-id=',
 
   //text
-  contactText = 'Contact',
-  errorMessage = 'Name is required',
+  contactText: 'Contact',
+  errorMessage: 'Name is required',
 
   //test data
   testEmail: 'test@example.com',
   testWebsite: 'https://bluescapeqainterview.wordpress.com',
-  testName = 'test',
+  testName: 'test',
 
   // introducing methods
   navigateToRequiredPage(URLData) {
@@ -47,5 +47,11 @@ module.exports = {
 
   clickSubmit() {
     I.forceClick(this.submit);
+  },
+
+  validateCreatedAccountDetails(name, email, website) {
+    I.see('Name: ' + name),
+    I.see('Email: ' + email),
+    I.see('Website: ' + website)
   }
 }
