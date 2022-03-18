@@ -1,5 +1,7 @@
 Feature('sendingMessage');
 
+var assert = require('assert');
+
 Scenario('send successful message', ({ I, contactPage}) => {
     contactPage.navigateToRequiredPage(contactPage.URL),
     I.see('Contact');
@@ -35,7 +37,6 @@ Scenario('Verify that the field Email is required.', async({ I, contactPage}) =>
 
     await I.grabAttributeFrom(contactPage.fields.email, 'aria-required').then(function(val) { 
         I.say(val); 
-        var assert = require('assert');
         assert.equal(val, 'true');
     })
 });
@@ -52,7 +53,6 @@ Scenario('Verify that the field website is required to be a URL.', async({ I, co
 
     await I.grabAttributeFrom(contactPage.fields.website, 'type').then(function(val) { 
         I.say(val); 
-        var assert = require('assert');
         assert.equal(val, 'url');
     })
 });
