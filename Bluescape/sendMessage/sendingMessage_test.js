@@ -4,36 +4,36 @@ var assert = require('assert');
 
 Scenario('send successful message', ({ I, contactPage}) => {
     contactPage.navigateToRequiredPage(contactPage.URL),
-    I.see('Contact');
-    contactPage.fillName("test"),
+    I.see(contactPage.contactText);
+    contactPage.fillName(contactPage.testName),
     contactPage.fillEmail(contactPage.testEmail),
     contactPage.fillWebsite(contactPage.testWebsite),
     contactPage.chooseCurrentDate(),
     contactPage.clickSubmit()
-    I.seeInCurrentUrl("contact-form-id=")
+    I.seeInCurrentUrl(contactPage.nextPage)
 });
 
 Scenario('Verify that the field Name is required.', ({ I, contactPage}) => {
     contactPage.navigateToRequiredPage(contactPage.URL),
-    I.see('Contact');
+    I.see(contactPage.contactText);
     contactPage.fillName(" "),
     contactPage.fillEmail(contactPage.testEmail),
     contactPage.fillWebsite(contactPage.testWebsite),
     contactPage.chooseCurrentDate(),
     contactPage.clickSubmit(),
     I.see('Error!'),
-    I.see('Name is required')
+    I.see(contactPage.errorMessage)
 });
 
 Scenario('Verify that the field Email is required.', async({ I, contactPage}) => {
     contactPage.navigateToRequiredPage(contactPage.URL),
-    I.see('Contact');
-    contactPage.fillName("test"),
+    I.see(contactPage.contactText);
+    contactPage.fillName(contactPage.testName),
     contactPage.fillEmail(" "),
     contactPage.fillWebsite(contactPage.testWebsite),
     contactPage.chooseCurrentDate(),
     contactPage.clickSubmit();
-    I.dontSeeInCurrentUrl("contact-form-id=")
+    I.dontSeeInCurrentUrl(contactPage.nextPage)
 
     await I.grabAttributeFrom(contactPage.fields.email, 'aria-required').then(function(val) { 
         I.say(val); 
@@ -43,13 +43,13 @@ Scenario('Verify that the field Email is required.', async({ I, contactPage}) =>
 
 Scenario('Verify that the field website is required to be a URL.', async({ I, contactPage}) => {
     contactPage.navigateToRequiredPage(contactPage.URL),
-    I.see('Contact');
-    contactPage.fillName("test"),
+    I.see(contactPage.contactText);
+    contactPage.fillName(contactPage.testName),
     contactPage.fillEmail(contactPage.testEmail),
-    contactPage.fillWebsite("test"),
+    contactPage.fillWebsite(contactPage.testName),
     contactPage.chooseCurrentDate(),
     contactPage.clickSubmit()
-    I.dontSeeInCurrentUrl("contact-form-id=")
+    I.dontSeeInCurrentUrl(contactPage.nextPage)
 
     await I.grabAttributeFrom(contactPage.fields.website, 'type').then(function(val) { 
         I.say(val); 
